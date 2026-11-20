@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking & Tiketi za Mabasi ya Mikoani</title>
+    <title>Word Drop - Typing Speed Game</title>
     <style>
         :root {
-            --primary: #0f766e;
-            --primary-dark: #115e59;
-            --accent: #f59e0b;
-            --danger: #dc2626;
-            --bg: #f1f5f9;
-            --card: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --border: #cbd5e1;
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #38bdf8;
+            --highlight-color: #4ade80;
+            --danger-color: #f43f5e;
         }
 
         * {
@@ -25,324 +22,516 @@
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 30px 15px;
-        }
-
-        .wrapper {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            color: var(--primary);
-            font-size: 2rem;
-            margin-bottom: 6px;
-        }
-
-        header p {
-            color: var(--muted);
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: var(--card);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-        }
-
-        .card h2 {
-            font-size: 1.25rem;
-            margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--bg);
-            color: var(--primary-dark);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary);
-        }
-
-        .price-box {
-            background: #f0fdfa;
-            border: 1px solid #99f6e4;
-            padding: 12px 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            font-weight: 600;
-        }
-
-        .price-amount {
-            color: var(--primary);
-            font-size: 1.2rem;
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 13px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-submit:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Tickets Section */
-        .tickets-list {
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            max-height: 620px;
-            overflow-y: auto;
-            padding-right: 4px;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        .ticket-card {
-            border: 1px dashed var(--primary);
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 15px;
+        #game-container {
+            width: 800px;
+            max-width: 95vw;
+            height: 600px;
+            max-height: 85vh;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
             position: relative;
+            overflow: hidden;
+            border: 2px solid #334155;
         }
 
-        .ticket-top {
+        /* Top HUD */
+        #hud {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+            padding: 15px 25px;
+            background-color: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid #334155;
+            font-size: 1.1rem;
+            font-weight: 600;
+            z-index: 10;
         }
 
-        .ticket-id {
-            background: var(--primary);
-            color: #fff;
-            padding: 3px 9px;
-            border-radius: 5px;
-            font-size: 0.8rem;
+        .stat span {
+            color: var(--accent-color);
+        }
+
+        #lives-display {
+            color: var(--danger-color);
+            letter-spacing: 3px;
+        }
+
+        /* Play Area */
+        #play-area {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .falling-word {
+            position: absolute;
+            font-size: 1.3rem;
             font-weight: bold;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 6px;
+            border: 1px solid #475569;
+            user-select: none;
+            transition: transform 0.05s;
+            white-space: nowrap;
         }
 
-        .ticket-route {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 6px;
+        .falling-word.active-target {
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+            z-index: 5;
         }
 
-        .ticket-details {
-            font-size: 0.88rem;
-            color: var(--muted);
+        .typed-part {
+            color: var(--highlight-color);
+        }
+
+        .remaining-part {
+            color: var(--text-color);
+        }
+
+        /* Danger Zone Line */
+        #ground {
+            height: 6px;
+            background: linear-gradient(90deg, transparent, var(--danger-color), transparent);
+            width: 100%;
+        }
+
+        /* Input Area */
+        #input-container {
+            padding: 15px;
+            background-color: rgba(15, 23, 42, 0.9);
+            display: flex;
+            justify-content: center;
+        }
+
+        #word-input {
+            width: 60%;
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #475569;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #word-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* Overlays (Start & Game Over) */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .overlay h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .overlay p {
+            color: #94a3b8;
+            margin-bottom: 25px;
+            max-width: 450px;
             line-height: 1.5;
         }
 
-        .ticket-footer {
-            margin-top: 12px;
-            padding-top: 10px;
-            border-top: 1px solid #e2e8f0;
+        .final-stats {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            background: var(--panel-bg);
+            padding: 15px 30px;
+            border-radius: 8px;
+            border: 1px solid #334155;
         }
 
-        .ticket-fare {
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-
-        .ticket-actions {
+        .final-stat-box {
             display: flex;
-            gap: 8px;
+            flex-direction: column;
         }
 
-        .btn-sm {
-            padding: 6px 10px;
+        .final-stat-box span:first-child {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .final-stat-box span:last-child {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--highlight-color);
+        }
+
+        button {
+            padding: 12px 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--bg-color);
+            background-color: var(--accent-color);
             border: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
         }
 
-        .btn-print {
-            background: #e2e8f0;
-            color: var(--text);
+        button:hover {
+            background-color: #7dd3fc;
+            transform: scale(1.03);
         }
 
-        .btn-print:hover {
-            background: #cbd5e1;
+        button:active {
+            transform: scale(0.98);
         }
 
-        .btn-cancel {
-            background: #fee2e2;
-            color: var(--danger);
+        .hidden {
+            display: none !important;
         }
 
-        .btn-cancel:hover {
-            background: #fecaca;
+        /* Screen Shake Effect on Miss */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
         }
 
-        .empty-msg {
-            text-align: center;
-            color: var(--muted);
-            padding: 30px 10px;
-            font-style: italic;
-        }
-
-        @media print {
-            body {
-                background: #fff;
-                padding: 0;
-            }
-            header, .booking-col, .btn-cancel, .btn-print {
-                display: none !important;
-            }
-            .grid-layout {
-                display: block;
-            }
-            .card {
-                box-shadow: none;
-                padding: 0;
-            }
-            .ticket-card {
-                break-inside: avoid;
-                margin-bottom: 20px;
-            }
+        .shake {
+            animation: shake 0.25s ease-in-out;
         }
     </style>
 </head>
 <body>
 
-    <div class="wrapper">
-        <header>
-            <h1>🚌 Mfumo wa Booking & Tiketi za Mabasi</h1>
-            <p>Chagua ruti, kiti, na tengeneza tiketi ya safari za mikoani kwa urahisi</p>
-        </header>
+    <div id="game-container">
+        <!-- HUD -->
+        <div id="hud">
+            <div class="stat">Score: <span id="score-display">0</span></div>
+            <div class="stat">WPM: <span id="wpm-display">0</span></div>
+            <div class="stat">Lives: <span id="lives-display">♥♥♥♥♥</span></div>
+        </div>
 
-        <div class="grid-layout">
-            <!-- Fomu ya Booking -->
-            <div class="card booking-col">
-                <h2>Fomu ya Kukata Tiketi</h2>
-                <form id="bookingForm">
-                    <div class="form-group">
-                        <label for="passengerName">Jina Kamili la Abiria</label>
-                        <input type="text" id="passengerName" placeholder="Mfano: Amina Hassan" required>
-                    </div>
+        <!-- Play Area -->
+        <div id="play-area"></div>
+        <div id="ground"></div>
 
-                    <div class="form-group">
-                        <label for="phoneNumber">Namba ya Simu</label>
-                        <input type="tel" id="phoneNumber" placeholder="Mfano: 0712 345 678" required>
-                    </div>
+        <!-- Typing Input -->
+        <div id="input-container">
+            <input type="text" id="word-input" placeholder="Type words here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+        </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="originCity">Kutoka (Mkoa)</label>
-                            <select id="originCity" required>
-                                <option value="Dar es Salaam">Dar es Salaam</option>
-                                <option value="Arusha">Arusha</option>
-                                <option value="Mwanza">Mwanza</option>
-                                <option value="Dodoma">Dodoma</option>
-                                <option value="Mbeya">Mbeya</option>
-                                <option value="Morogoro">Morogoro</option>
-                                <option value="Tanga">Tanga</option>
-                            </select>
-                        </div>
+        <!-- Start Screen -->
+        <div id="start-screen" class="overlay">
+            <h1>WORD DROP</h1>
+            <p>Type the falling words before they hit the red line at the bottom. Speed increases as your score climbs!</p>
+            <button id="start-btn">Start Game</button>
+        </div>
 
-                        <div class="form-group">
-                            <label for="destinationCity">Kwenda (Mkoa)</label>
-                            <select id="destinationCity" required>
-                                <option value="Arusha">Arusha</option>
-                                <option value="Dar es Salaam">Dar es Salaam</option>
-                                <option value="Mwanza">Mwanza</option>
-                                <option value="Dodoma">Dodoma</option>
-                                <option value="Mbeya">Mbeya</option>
-                                <option value="Morogoro">Morogoro</option>
-                                <option value="Tanga">Tanga</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="travelDate">Tarehe ya Safari</label>
-                            <input type="date" id="travelDate" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="busClass">Daraja la Basi</label>
-                            <select id="busClass" required>
-                                <option value="Luxury">Luxury (TZS 35,000)</option>
-                                <option value="VIP">VIP (TZS 50,000)</option>
-                                <option value="Semi-Luxury">Semi-Luxury (TZS 28,000)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="seatNumber">Chagua Namba ya Kiti (1 - 45)</label>
-                        <select id="seatNumber" required></select>
-                    </div>
-
-                    <div class="price-box">
-                        <span>Nauli ya Tiketi:</span>
-                        <span class="price-amount" id="fareDisplay">TZS 35,000</span>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Thibitisha & Tengeneza Tiketi</button>
-                </form>
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="overlay hidden">
+            <h1 style="color: var(--danger-color);">GAME OVER</h1>
+            <p>The words reached the ground!</p>
+            <div class="final-stats">
+                <div class="final-stat-box">
+                    <span>Final Score</span>
+                    <span id="final-score">0</span>
+                </div>
+                <div class="final-stat-box">
+                    <span>Average WPM</span>
+                    <span id="final-wpm">0</span>
+                </div>
             </div>
+            <button id="restart-btn">Play Again</button>
+        </div>
+    </div>
 
-            <!-- Orodha ya Tiketi Z
+    <script>
+        // Word Bank categorized roughly by difficulty
+        const wordBank = [
+            // Short / Easy
+            "code", "data", "fast", "type", "byte", "node", "loop", "grid", "link", "file",
+            "host", "port", "disk", "user", "task", "sync", "play", "jump", "drop", "fire",
+            "wind", "star", "moon", "wave", "peak", "echo", "flux", "glow", "neon", "zero",
+            // Medium
+            "script", "window", "server", "client", "memory", "buffer", "stream", "socket",
+            "binary", "string", "object", "method", "syntax", "module", "router", "packet",
+            "system", "kernel", "thread", "driver", "screen", "canvas", "vector", "matrix",
+            "planet", "rocket", "galaxy", "nebula", "energy", "photon", "cipher", "beacon",
+            // Hard / Long
+            "function", "variable", "constant", "database", "protocol", "compiler", "keyboard",
+            "terminal", "software", "hardware", "internet", "security", "firewall", "algorithm",
+            "structure", "interface", "component", "framework", "developer", "execution",
+            "bandwidth", "frequency", "dimension", "satellite", "telescope", "astronaut"
+        ];
+
+        // DOM Elements
+        const gameContainer = document.getElementById('game-container');
+        const playArea = document.getElementById('play-area');
+        const wordInput = document.getElementById('word-input');
+        const scoreDisplay = document.getElementById('score-display');
+        const wpmDisplay = document.getElementById('wpm-display');
+        const livesDisplay = document.getElementById('lives-display');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const finalWpmDisplay = document.getElementById('final-wpm');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // Game State
+        let activeWords = [];
+        let score = 0;
+        let lives = 5;
+        let isPlaying = false;
+        let lastFrameTime = 0;
+        let spawnTimer = 0;
+        let spawnInterval = 2000; // ms between spawns
+        let baseSpeed = 60; // pixels per second
+        let startTime = 0;
+        let totalCharsTyped = 0;
+        let animationFrameId = null;
+
+        // Start / Restart Listeners
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+
+        // Keep input focused during gameplay
+        gameContainer.addEventListener('click', () => {
+            if (isPlaying) wordInput.focus();
+        });
+
+        function startGame() {
+            // Reset state
+            activeWords.forEach(w => w.element.remove());
+            activeWords = [];
+            score = 0;
+            lives = 5;
+            spawnInterval = 2000;
+            baseSpeed = 65;
+            totalCharsTyped = 0;
+            startTime = Date.now();
+            isPlaying = true;
+
+            // Update UI
+            updateHUD();
+            wordInput.value = '';
+            wordInput.disabled = false;
+            wordInput.focus();
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+
+            // Spawn first word immediately
+            spawnWord();
+            lastFrameTime = performance.now();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function spawnWord() {
+            // Filter words based on current score to scale difficulty
+            let pool = wordBank;
+            if (score < 100) {
+                pool = wordBank.filter(w => w.length <= 6);
+            } else if (score < 300) {
+                pool = wordBank.filter(w => w.length <= 8);
+            }
+
+            // Pick a random word not currently on screen
+            let chosenText;
+            let attempts = 0;
+            do {
+                chosenText = pool[Math.floor(Math.random() * pool.length)];
+                attempts++;
+            } while (activeWords.some(w => w.text === chosenText) && attempts < 10);
+
+            // Create DOM element
+            const el = document.createElement('div');
+            el.className = 'falling-word';
+            el.innerHTML = `<span class="typed-part"></span><span class="remaining-part">${chosenText}</span>`;
+            playArea.appendChild(el);
+
+            // Calculate random horizontal position within bounds
+            const areaWidth = playArea.clientWidth;
+            const wordWidth = el.offsetWidth;
+            const maxX = Math.max(10, areaWidth - wordWidth - 15);
+            const randomX = Math.floor(Math.random() * maxX) + 10;
+
+            el.style.left = `${randomX}px`;
+            el.style.top = `-35px`;
+
+            // Speed variation slightly per word
+            const speedMultiplier = 0.85 + Math.random() * 0.3;
+
+            activeWords.push({
+                text: chosenText,
+                x: randomX,
+                y: -35,
+                speed: baseSpeed * speedMultiplier,
+                element: el
+            });
+        }
+
+        // Handle Typing Input
+        wordInput.addEventListener('input', () => {
+            if (!isPlaying) return;
+
+            const typed = wordInput.value.trim().toLowerCase();
+            
+            // Check for exact match first
+            const exactMatchIndex = activeWords.findIndex(w => w.text === typed);
+            if (exactMatchIndex !== -1) {
+                const matchedWord = activeWords[exactMatchIndex];
+                
+                // Update stats
+                score += matchedWord.text.length * 10;
+                totalCharsTyped += matchedWord.text.length;
+                
+                // Increase difficulty gradually
+                baseSpeed = Math.min(220, 65 + Math.floor(score / 40));
+                spawnInterval = Math.max(650, 2000 - Math.floor(score * 1.2));
+
+                // Remove word
+                matchedWord.element.remove();
+                activeWords.splice(exactMatchIndex, 1);
+                
+                // Clear input & update UI
+                wordInput.value = '';
+                highlightMatches('');
+                updateHUD();
+                return;
+            }
+
+            // Highlight partial matches
+            highlightMatches(typed);
+        });
+
+        function highlightMatches(typed) {
+            // Sort by lowest on screen (highest Y) so the most urgent matching word gets target focus
+            let targetAssigned = false;
+            const sortedByUrgency = [...activeWords].sort((a, b) => b.y - a.y);
+
+            sortedByUrgency.forEach(wordObj => {
+                const typedSpan = wordObj.element.querySelector('.typed-part');
+                const remSpan = wordObj.element.querySelector('.remaining-part');
+
+                if (typed.length > 0 && wordObj.text.startsWith(typed)) {
+                    typedSpan.textContent = wordObj.text.slice(0, typed.length);
+                    remSpan.textContent = wordObj.text.slice(typed.length);
+                    
+                    if (!targetAssigned) {
+                        wordObj.element.classList.add('active-target');
+                        targetAssigned = true;
+                    } else {
+                        wordObj.element.classList.remove('active-target');
+                    }
+                } else {
+                    typedSpan.textContent = '';
+                    remSpan.textContent = wordObj.text;
+                    wordObj.element.classList.remove('active-target');
+                }
+            });
+        }
+
+        function updateHUD() {
+            scoreDisplay.textContent = score;
+            livesDisplay.textContent = '♥'.repeat(Math.max(0, lives));
+            
+            // Calculate WPM (Standard: 5 characters = 1 word)
+            const elapsedMinutes = (Date.now() - startTime) / 60000;
+            const wpm = elapsedMinutes > 0 ? Math.round((totalCharsTyped / 5) / elapsedMinutes) : 0;
+            wpmDisplay.textContent = wpm;
+        }
+
+        function triggerMiss() {
+            lives--;
+            updateHUD();
+            
+            // Visual shake feedback
+            gameContainer.classList.remove('shake');
+            void gameContainer.offsetWidth; // trigger reflow
+            gameContainer.classList.add('shake');
+
+            if (lives <= 0) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            isPlaying = false;
+            cancelAnimationFrame(animationFrameId);
+            wordInput.disabled = true;
+
+            finalScoreDisplay.textContent = score;
+            finalWpmDisplay.textContent = wpmDisplay.textContent;
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        function gameLoop(currentTime) {
+            if (!isPlaying) return;
+
+            const deltaTime = (currentTime - lastFrameTime) / 1000; // in seconds
+            lastFrameTime = currentTime;
+
+            // Spawn logic
+            spawnTimer += deltaTime * 1000;
+            if (spawnTimer >= spawnInterval) {
+                spawnWord();
+                spawnTimer = 0;
+            }
+
+            // Update word positions
+            const playHeight = playArea.clientHeight;
+            for (let i = activeWords.length - 1; i >= 0; i--) {
+                const wordObj = activeWords[i];
+                wordObj.y += wordObj.speed * deltaTime;
+                wordObj.element.style.top = `${wordObj.y}px`;
+
+                // Check if word hit the bottom
+                if (wordObj.y + wordObj.element.offsetHeight >= playHeight) {
+                    wordObj.element.remove();
+                    activeWords.splice(i, 1);
+                    
+                    // If user was typing this word, clear input if no other word matches
+                    const currentInput = wordInput.value.trim().toLowerCase();
+                    if (currentInput && !activeWords.some(w => w.text.startsWith(currentInput))) {
+                        wordInput.value = '';
+                    }
+                    highlightMatches(wordInput.value.trim().toLowerCase());
+                    triggerMiss();
+                }
+            }
+
+            // Periodically update WPM even between words
+            updateHUD();
+
+            if (isPlaying) {
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+        }
+    </script>
+</body>
+</html>
