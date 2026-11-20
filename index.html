@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking & Tiketi za Mabasi ya Mikoani</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --accent: #f59e0b;
+            --danger: #dc2626;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 30px 15px;
+        }
+
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: var(--muted);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bg);
+            color: var(--primary-dark);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .price-box {
+            background: #f0fdfa;
+            border: 1px solid #99f6e4;
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .price-amount {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Tickets Section */
+        .tickets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 620px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .ticket-card {
+            border: 1px dashed var(--primary);
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .ticket-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ticket-id {
+            background: var(--primary);
+            color: #fff;
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-route {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .ticket-details {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .ticket-footer {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticket-fare {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-print {
+            background: #e2e8f0;
+            color: var(--text);
+        }
+
+        .btn-print:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-cancel {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .btn-cancel:hover {
+            background: #fecaca;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--muted);
+            padding: 30px 10px;
+            font-style: italic;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            header, .booking-col, .btn-cancel, .btn-print {
+                display: none !important;
+            }
+            .grid-layout {
+                display: block;
+            }
+            .card {
+                box-shadow: none;
+                padding: 0;
+            }
+            .ticket-card {
+                break-inside: avoid;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>🚌 Mfumo wa Booking & Tiketi za Mabasi</h1>
+            <p>Chagua ruti, kiti, na tengeneza tiketi ya safari za mikoani kwa urahisi</p>
+        </header>
+
+        <div class="grid-layout">
+            <!-- Fomu ya Booking -->
+            <div class="card booking-col">
+                <h2>Fomu ya Kukata Tiketi</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="passengerName">Jina Kamili la Abiria</label>
+                        <input type="text" id="passengerName" placeholder="Mfano: Amina Hassan" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Namba ya Simu</label>
+                        <input type="tel" id="phoneNumber" placeholder="Mfano: 0712 345 678" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="originCity">Kutoka (Mkoa)</label>
+                            <select id="originCity" required>
+                                <option value="Dar es Salaam">Dar es Salaam</option>
+                                <option value="Arusha">Arusha</option>
+                                <option value="Mwanza">Mwanza</option>
+                                <option value="Dodoma">Dodoma</option>
+                                <option value="Mbeya">Mbeya</option>
+                                <option value="Morogoro">Morogoro</option>
+                                <option value="Tanga">Tanga</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destinationCity">Kwenda (Mkoa)</label>
+                            <select id="destinationCity" required>
+                                <option value="Arusha">Arusha</option>
+                                <option value="Dar es Salaam">Dar es Salaam</option>
+                                <option value="Mwanza">Mwanza</option>
+                                <option value="Dodoma">Dodoma</option>
+                                <option value="Mbeya">Mbeya</option>
+                                <option value="Morogoro">Morogoro</option>
+                                <option value="Tanga">Tanga</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="travelDate">Tarehe ya Safari</label>
+                            <input type="date" id="travelDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="busClass">Daraja la Basi</label>
+                            <select id="busClass" required>
+                                <option value="Luxury">Luxury (TZS 35,000)</option>
+                                <option value="VIP">VIP (TZS 50,000)</option>
+                                <option value="Semi-Luxury">Semi-Luxury (TZS 28,000)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seatNumber">Chagua Namba ya Kiti (1 - 45)</label>
+                        <select id="seatNumber" required></select>
+                    </div>
+
+                    <div class="price-box">
+                        <span>Nauli ya Tiketi:</span>
+                        <span class="price-amount" id="fareDisplay">TZS 35,000</span>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Thibitisha & Tengeneza Tiketi</button>
+                </form>
+            </div>
+
+            <!-- Orodha ya Tiketi Z
