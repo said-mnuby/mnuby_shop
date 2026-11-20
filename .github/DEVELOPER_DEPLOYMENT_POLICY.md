@@ -87,6 +87,7 @@ Where practical, the administrator will identify the issue and allow it to be co
 By using the deployment workflow, the developer confirms that they have read and will follow this policy. Questions or requests for a new project ID, subdomain, or cleanup of obsolete files must be sent to the administrator.
 
 `Whatsapp: +255 715 874 294`
+
 `Email: saidmnuby@gmail.com`
 
 visit: https://techwaretz.elimutaifa.co.tz
